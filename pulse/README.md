@@ -1,0 +1,3 @@
+# `pulse/` — Tier 0: cornerstone
+
+The canonical Pulse atom and envelope codec (`pulse-canon`) and the conformance artifacts that pin their wire format (`pulse-spec/`: the test vectors, the lex root and the generators that reproduce them). The book describes this tier in [Tier 0: pulse](https://pulse-mesh.net/docs/architecture/pulse.html), the byte layouts in [the specification](https://pulse-mesh.net/docs/reference/spec/README.html), and every crate in the generated [crate index](https://pulse-mesh.net/docs/reference/crates.html). Regenerate the vectors and the lex root before treating a wire-format change as final; they are what other implementations depend on longest.

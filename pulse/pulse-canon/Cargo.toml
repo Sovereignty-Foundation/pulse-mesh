@@ -1,0 +1,30 @@
+[package]
+name = "pulse-canon"
+description = "Pulse Mesh canonical primitive: the 128-byte Pulse + PulseEnvelope codec + NodeId. Tier 0 (the shape)."
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license-file.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+keywords = ["pulse-mesh", "wire-format", "canonical", "envelope"]
+categories = ["encoding"]
+
+[features]
+# Serialize and Deserialize for the canonical types. Deserializing a
+# PulseEnvelope recomputes its id and refuses one that does not match.
+serde = ["dep:serde", "bitflags/serde"]
+
+[dependencies]
+bitflags.workspace = true
+blake3.workspace = true
+serde = { workspace = true, optional = true }
+
+[dev-dependencies]
+hex.workspace = true
+proptest.workspace = true
+serde_json.workspace = true
+
+[lints]
+workspace = true

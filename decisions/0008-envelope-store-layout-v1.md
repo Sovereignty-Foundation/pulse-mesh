@@ -1,0 +1,16 @@
+# ADR-0008 — Envelope store layout version 1
+
+**Status:** Superseded in part by [ADR-0011](0011-envelope-store-layout-v2.md) (2026-09-24)
+**Date:** 2026-09-24
+
+## Context
+
+`EnvelopeStore` (`core/core-store`) is the shared-memory circular buffer the hub runtime writes every broadcast envelope into. Its original layout had a single `AtomicU64` write cursor in the header and, per slot, a 16-byte id, a 4-byte length and the JSON body. The writer claimed a cursor with `fetch_add` and only then wrote the slot, so `write_cursor()` published a slot index before its body existed; the length prefix landed before the body; readers re-checked nothing and `read_since` never compared the slot against the cursor it wanted, so a lapped slot's stale-but-valid JSON came back as new data. The region carried no magic or version, so two builds disagreeing on the slot geometry silently mis-indexed each other, and a second process opening the same hub name became a second writer to the same cursor with no protection.
+
+## Decision
+
+The region gets a versioned header and every slot gets its own sequence word. Header, 64 bytes: the write cursor at 0..8 (now a claim counter only), a magic `PMES` at 8..12 stored last with release ordering, the layout version at 12..16, the capacity at 16..20 and the maximum entry size at 20..24. Slot header, 64 bytes: a sequence word at 0..8 that is `0` when never written, `2·lap+1` while a write is in progress and `2·lap+2` once published, where `lap = cursor / capacity`; the id at 8..24; the body length at 24..28; the body from 64 on. A writer claims the cursor, then claims the slot by a bounded compare-and-swap from an even value to its odd mark, writes id, length and body, and stores the even mark; if the slot cannot be claimed (another writer, a predecessor that died mid-write, or a newer lap that already owns it) the store fails with `SlotBusy` instead of tearing whatever is there. A reader trusts a slot only when its sequence word is the published value for the cursor it wants both before and after copying the body out; `fetch` skips slots that are mid-write, torn or corrupt rather than ending the scan; `read_since` skips a cursor whose slot never reaches the published state within its budget so a streaming reader never wedges on a dead writer. `open` refuses a region whose header disagrees with the build on magic, version, capacity or entry size (`LayoutMismatch`), after the existing size check.
+
+## Consequences
+
+The store grows by 44 bytes per slot (11 KB for the runtime's 256-slot stores) and every read costs one more atomic load. A region created by the previous layout is refused with a `LayoutMismatch` on its magic and must be removed by hand (`/dev/shm` on Linux; on macOS the object persists until unlinked or the host reboots); the hub runtime logs the refusal and runs without persistence rather than failing to start. After a writer dies between its odd and even marks, one slot in `capacity` stays busy on every lap until the region is recreated; that is deliberate, because force-claiming the slot could tear a merely slow writer a full lap behind. Sizing the region to the envelopes actually stored, rather than reserving the maximum entry size per slot, is a separate decision that belongs to the hub configuration, not to this layout.

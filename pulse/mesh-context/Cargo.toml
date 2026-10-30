@@ -1,0 +1,27 @@
+[package]
+name = "mesh-context"
+description = "Pulse Mesh Context Registry / Book of Standards: 16-bit context_id + 16-bit subscope namespace partitioning of the Pulse scope field."
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license-file.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+keywords = ["pulse-mesh", "context", "scope", "namespace", "registry"]
+categories = ["network-programming"]
+
+[package.metadata.pulse-mesh]
+# Vendored from sovOS and used by nothing in the tree yet; ADR-0014.
+status = "pre-integration"
+
+[dependencies]
+pulse-canon = { path = "../pulse-canon" }
+blake3.workspace = true
+serde = { workspace = true, features = ["derive"] }
+serde_json.workspace = true
+toml.workspace = true
+thiserror.workspace = true
+
+[lints]
+workspace = true

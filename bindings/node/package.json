@@ -1,0 +1,42 @@
+{
+  "name": "pulse-wire",
+  "version": "1.0.0-beta",
+  "description": "Node.js bindings for the Pulse Mesh Standard pulse-wire-udp transport, the canonical envelope codec and the shared-memory ring channel.",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "*.node",
+    "README.md",
+    "LICENSE",
+    "NOTICE",
+    "THIRD_PARTY_NOTICES.md"
+  ],
+  "license": "UNLICENSED",
+  "private": true,
+  "engines": {
+    "node": ">= 18"
+  },
+  "scripts": {
+    "build": "napi build --platform --release --cargo-name pulse_wire",
+    "build:debug": "napi build --platform --cargo-name pulse_wire",
+    "test": "node --test __test__/*.test.mjs"
+  },
+  "napi": {
+    "name": "index",
+    "triples": {
+      "defaults": false,
+      "additional": [
+        "aarch64-apple-darwin",
+        "x86_64-apple-darwin",
+        "aarch64-unknown-linux-gnu",
+        "x86_64-unknown-linux-gnu"
+      ]
+    }
+  },
+  "devDependencies": {
+    "@napi-rs/cli": "^2.18.4",
+    "@noble/hashes": "^2.2.0"
+  }
+}

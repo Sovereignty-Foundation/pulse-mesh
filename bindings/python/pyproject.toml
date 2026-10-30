@@ -1,0 +1,28 @@
+[build-system]
+requires = ["maturin>=1.7,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "pulse-wire"
+version = "1.0.0b0"
+description = "Python bindings for the Pulse Mesh Standard pulse-wire-udp transport"
+readme = "README.md"
+license = { text = "LicenseRef-Proprietary" }
+authors = [
+    { name = "Sovereignty Foundation Inc." },
+]
+requires-python = ">=3.8"
+classifiers = [
+    "License :: Other/Proprietary License",
+    "Private :: Do Not Upload",
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Rust",
+    "Topic :: System :: Networking",
+]
+
+[tool.maturin]
+module-name = "pulse_wire"
+features = ["pyo3/extension-module"]
+strip = false

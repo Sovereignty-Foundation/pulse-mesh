@@ -1,0 +1,22 @@
+# SPDX-License-Identifier: LicenseRef-Proprietary
+[package]
+name = "gen-test-vectors"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license-file.workspace = true
+rust-version.workspace = true
+publish = false
+description = "Regenerate the language-neutral conformance fixtures under test-vectors/."
+
+[[bin]]
+name = "gen-test-vectors"
+path = "src/main.rs"
+
+[dependencies]
+pulse-canon = { path = "../../../pulse-canon" }
+hex = { workspace = true }
+serde_json = { workspace = true }
+
+[lints]
+workspace = true

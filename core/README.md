@@ -1,0 +1,3 @@
+# `core/` — Tier 1: engine
+
+Reference data structures and transports on the `pulse-canon` atom: the SeqLock ring, the envelope store, the single-slot region, the backoff strategy, the transport trait family, the reference UDP transport and the CRC32C trailer. The book describes this tier in [Tier 1: core](https://pulse-mesh.net/docs/architecture/core.html), each primitive's exact contract in [the specification](https://pulse-mesh.net/docs/reference/spec/README.html), and every crate in the generated [crate index](https://pulse-mesh.net/docs/reference/crates.html). Depend on `core-transport` and a backend such as `pulse-wire-udp` unless you are implementing a transport or a ring primitive yourself.

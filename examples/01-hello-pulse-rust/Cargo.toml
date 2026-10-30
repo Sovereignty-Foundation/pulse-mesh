@@ -1,0 +1,21 @@
+# SPDX-License-Identifier: LicenseRef-Proprietary
+[package]
+name = "example-01-hello-pulse-rust"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license-file.workspace = true
+rust-version.workspace = true
+publish = false
+description = "Example 01 — encode + decode a PulseEnvelope, print its BLAKE3 content hash."
+
+[[bin]]
+name = "hello-pulse"
+path = "src/main.rs"
+
+[dependencies]
+pulse-canon = { path = "../../pulse/pulse-canon" }
+hex = { workspace = true }
+
+[lints]
+workspace = true

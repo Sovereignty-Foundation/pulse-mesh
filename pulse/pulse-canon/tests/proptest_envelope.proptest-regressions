@@ -1,0 +1,7 @@
+# Seeds for failure cases proptest has generated in the past. It is
+# automatically read and these particular cases re-run before any
+# novel cases are generated.
+#
+# It is recommended to check this file in to source control so that
+# everyone who runs the test benefits from these saved cases.
+cc 3f3750335c558f7622efe5536afe15ebd8012e1b6f7c57ebe7836bd60d13b528 # shrinks to env = PulseEnvelope { id: PulseEnvelopeId([163, 209, 242, 97, 172, 249, 12, 94, 224, 206, 15, 220, 86, 223, 134, 62]), origin: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], monotonic_nanos: 0, envelope_type: 0, type_name: None, flags: PulseEnvelopeFlags(0x0), payload: Raw([0, 0, 0, 0, 0, 0, 0, 0]) }, at = Index(14630176334321368524), value = 9, extra = [0]

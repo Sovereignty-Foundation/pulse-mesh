@@ -1,0 +1,32 @@
+# SPDX-License-Identifier: LicenseRef-Proprietary
+# Standalone crate — opts out of the parent workspace like the other
+# bindings, because a wasm32 cdylib must not be swept into
+# `cargo build --workspace` at the repo root.
+[workspace]
+
+[package]
+name = "pulse-wasm"
+version = "1.0.0-beta"
+edition = "2021"
+authors = ["Sovereignty Foundation Inc."]
+license-file = "../../LICENSE"
+rust-version = "1.95"
+description = "WebAssembly binding for the Pulse Mesh canonical codec (pulse-canon): encode, decode, verify and content-address envelopes, decode 128-byte Pulses and re-run the conformance fixtures in a browser. Codec only, no ring or transport."
+publish = false
+
+[lib]
+name = "pulse_wasm"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+pulse-canon = { path = "../../pulse/pulse-canon" }
+wasm-bindgen = "=0.2.128"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+hex = "0.4"
+
+[profile.release]
+opt-level = "s"
+lto = "fat"
+codegen-units = 1
+panic = "abort"

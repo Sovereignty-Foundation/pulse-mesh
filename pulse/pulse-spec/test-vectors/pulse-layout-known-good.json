@@ -1,0 +1,29 @@
+{
+  "description": "Deterministic 128-byte Pulse with Heartbeat overlay. Exercises the cache-line-aligned wire layout and the _pad2 HeartbeatPayload overlay.",
+  "expected": {
+    "canonical_hex": "0000000000000000112233445566778899aabbccddeeff010807060504030201000000000000000001000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000e80300000000000000000000040002000000070000000000",
+    "size_bytes": 128
+  },
+  "inputs": {
+    "chain_step": 0,
+    "envelope_ref_hex": "00000000000000000000000000000000",
+    "heartbeat_overlay": {
+      "consecutive_errors": 0,
+      "error_count": 0,
+      "health_state": 0,
+      "path_count": 2,
+      "schema_version": 1,
+      "stage_count": 4,
+      "uptime_ms": 1000,
+      "wake_state": 7
+    },
+    "instruction": "Heartbeat (0x0001)",
+    "monotonic_nanos": 72623859790382856,
+    "origin_id_hex": "112233445566778899aabbccddeeff01",
+    "preimage_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+    "scope_hex": "0x00010000"
+  },
+  "name": "pulse-layout-known-good",
+  "spec_section": "2",
+  "spec_version": "draft-00"
+}

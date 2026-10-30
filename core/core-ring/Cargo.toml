@@ -1,0 +1,27 @@
+[package]
+name = "core-ring"
+description = "Pulse Mesh SHM-backed SeqLock ring buffer (single-writer, N-reader). Tier 1 (the engine)."
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license-file.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+keywords = ["pulse-mesh", "ring-buffer", "shm", "seqlock", "lock-free"]
+categories = ["concurrency", "data-structures", "os::unix-apis"]
+
+[dependencies]
+pulse-canon = { path = "../../pulse/pulse-canon" }
+core-region = { path = "../core-region" }
+blake3.workspace = true
+pms-crc32c = { path = "../pms-crc32c" }
+libc.workspace = true
+thiserror.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true
+quanta.workspace = true
+
+[lints]
+workspace = true

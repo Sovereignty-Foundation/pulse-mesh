@@ -1,0 +1,20 @@
+[package]
+name = "mesh-capability"
+description = "Pulse Mesh capability negotiation: per-node feature flags + version negotiation handshake."
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license-file.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+keywords = ["pulse-mesh", "capability", "negotiation", "version"]
+categories = ["network-programming"]
+
+[dependencies]
+pulse-canon = { path = "../pulse-canon" }
+serde = { workspace = true, features = ["derive"] }
+thiserror.workspace = true
+
+[lints]
+workspace = true

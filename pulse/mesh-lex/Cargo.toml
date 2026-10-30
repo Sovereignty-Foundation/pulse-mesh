@@ -1,0 +1,23 @@
+[package]
+name = "mesh-lex"
+description = "Pulse Mesh public conformance substrate — minimum-viable lex registry + Merkle root over the registered catalog."
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license-file.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+
+[dependencies]
+pulse-canon = { path = "../pulse-canon" }
+blake3.workspace = true
+serde = { workspace = true, features = ["derive"] }
+serde_json.workspace = true
+thiserror.workspace = true
+
+[dev-dependencies]
+proptest.workspace = true
+
+[lints]
+workspace = true

@@ -1,0 +1,12 @@
+[package]
+name = "mesh-stage-registry"
+description = "Compile-time stage / function registry macro for ring hubs. The `register_stages!` macro enumerates a hub's functions and stages and emits RING_MANIFEST, so the inner-ring four-crate composition is asserted in source and testable."
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license-file.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true

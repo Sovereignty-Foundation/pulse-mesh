@@ -1,0 +1,17 @@
+[package]
+name = "core-backoff"
+description = "Pulse Mesh backoff for OS-visible stalls: spin, then yield, then sleep in fixed steps. Tier 1 (the engine)."
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license-file.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+keywords = ["pulse-mesh", "backoff", "retry"]
+categories = ["algorithms"]
+
+[dependencies]
+
+[lints]
+workspace = true

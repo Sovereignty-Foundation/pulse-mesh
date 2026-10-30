@@ -1,0 +1,22 @@
+# SPDX-License-Identifier: LicenseRef-Proprietary
+[package]
+name = "example-03-embed-ring-rust"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license-file.workspace = true
+rust-version.workspace = true
+publish = false
+description = "Example 03 — the shared-memory ring and the envelope store used directly, without the daemon."
+
+[[bin]]
+name = "embed-ring"
+path = "src/main.rs"
+
+[dependencies]
+pulse-canon = { path = "../../pulse/pulse-canon" }
+core-ring = { path = "../../core/core-ring" }
+core-store = { path = "../../core/core-store" }
+
+[lints]
+workspace = true

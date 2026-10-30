@@ -1,0 +1,36 @@
+# Standalone crate — opt out of the parent workspace so cdylib +
+# staticlib outputs don't fight `cargo build --workspace` at the repo
+# root, mirroring the bindings/pulse-wire-py pattern.
+[workspace]
+
+[package]
+name = "pulse-wire-c"
+version = "1.0.0-beta"
+edition = "2021"
+authors = ["Sovereignty Foundation Inc."]
+license-file = "../../LICENSE"
+rust-version = "1.95"
+description = "C FFI layer for the Pulse Mesh Standard pulse-wire-udp transport and the shared-memory ring channel. Builds cdylib + staticlib; generates include/pulse_wire.h via cbindgen. Foundation for Java (JNI) / Go (cgo) / C / C++ bindings."
+publish = false
+
+[lib]
+name = "pulse_wire"
+crate-type = ["cdylib", "staticlib"]
+
+[dependencies]
+# Renamed to keep symbol space clean; the FFI crate's lib name is also
+# `pulse_wire`. The dependency is `pulse-canon`,
+# imported under the name `pulse_wire_core`.
+pulse-wire-core = { package = "pulse-canon", path = "../../pulse/pulse-canon" }
+pulse-wire-udp-transport = { package = "pulse-wire-udp", path = "../../core/pulse-wire-udp" }
+# `pms_channel_*`: the shared-memory ring and envelope store.
+core-ring = { path = "../../core/core-ring" }
+core-store = { path = "../../core/core-store" }
+
+[build-dependencies]
+cbindgen = "0.27"
+
+[profile.release]
+lto = "fat"
+codegen-units = 1
+panic = "abort"

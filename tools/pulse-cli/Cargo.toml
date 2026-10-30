@@ -1,0 +1,32 @@
+# SPDX-License-Identifier: LicenseRef-Proprietary
+[package]
+name = "pulse-cli"
+description = "The standard's own command line, `pulse`: encode, decode and verify envelopes, send and receive Pulses over UDP, and the loopback smoke bench, over pulse-canon and pulse-wire-udp alone. Peripheral."
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license-file.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+[lib]
+name = "pulse_cli"
+path = "src/lib.rs"
+
+[[bin]]
+name = "pulse"
+path = "src/main.rs"
+
+[dependencies]
+pulse-canon = { path = "../../pulse/pulse-canon" }
+pulse-wire-udp = { path = "../../core/pulse-wire-udp" }
+anyhow.workspace = true
+blake3.workspace = true
+clap.workspace = true
+hex.workspace = true
+serde = { workspace = true, features = ["derive"] }
+serde_json.workspace = true
+thiserror.workspace = true
+
+[lints]
+workspace = true

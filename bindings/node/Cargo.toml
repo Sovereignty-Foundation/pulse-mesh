@@ -1,0 +1,41 @@
+# Standalone crate — opt out of the parent workspace so the napi-rs
+# `cdylib` link configuration doesn't fight `cargo build --workspace`
+# at the repo root. Mirrors peripheral/bindings/python and peripheral/bindings/c.
+[workspace]
+
+[package]
+name = "pulse-wire-node"
+version = "1.0.0-beta"
+edition = "2021"
+authors = ["Sovereignty Foundation Inc."]
+license-file = "../../LICENSE"
+rust-version = "1.95"
+description = "Node.js bindings (via napi-rs) for the Pulse Mesh Standard pulse-wire-udp transport, the canonical envelope codec and the shared-memory ring channel."
+publish = false
+
+[lib]
+name = "pulse_wire"
+crate-type = ["cdylib"]
+
+[dependencies]
+# Renamed because the lib name and the napi #[napi] macro both want
+# `pulse_wire`-namespaced symbols. The dependency is `pulse-canon`,
+# imported under the name `pulse_wire_core`.
+pulse-wire-core = { package = "pulse-canon", path = "../../pulse/pulse-canon" }
+pulse-wire-udp-transport = { package = "pulse-wire-udp", path = "../../core/pulse-wire-udp" }
+# `Channel`: the shared-memory ring and envelope store.
+core-ring = { path = "../../core/core-ring" }
+core-store = { path = "../../core/core-store" }
+
+# napi-rs runtime + derive macros.
+napi = { version = "2", default-features = false, features = ["napi9"] }
+napi-derive = "2"
+
+[build-dependencies]
+napi-build = "2"
+
+[profile.release]
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = "symbols"

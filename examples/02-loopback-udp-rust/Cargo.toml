@@ -1,0 +1,21 @@
+# SPDX-License-Identifier: LicenseRef-Proprietary
+[package]
+name = "example-02-loopback-udp-rust"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license-file.workspace = true
+rust-version.workspace = true
+publish = false
+description = "Example 02 — a sender and a receiver thread exchanging Pulses over UDP loopback in one process."
+
+[[bin]]
+name = "loopback-udp"
+path = "src/main.rs"
+
+[dependencies]
+pulse-canon = { path = "../../pulse/pulse-canon" }
+pulse-wire-udp = { path = "../../core/pulse-wire-udp" }
+
+[lints]
+workspace = true

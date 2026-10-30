@@ -1,0 +1,17 @@
+[package]
+name = "pms-crc32c"
+description = "Pulse Mesh CRC32C trailer: compute and verify the checksum a Pulse carries in its last four bytes. Module M10. Tier 1 (the engine)."
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license-file.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+keywords = ["pulse-mesh", "crc32c", "integrity", "checksum"]
+categories = ["algorithms"]
+[dependencies]
+crc32c.workspace = true
+
+[lints]
+workspace = true

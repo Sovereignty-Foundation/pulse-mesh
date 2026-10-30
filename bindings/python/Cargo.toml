@@ -1,0 +1,37 @@
+# Standalone crate — opt out of the parent workspace so PyO3's
+# `extension-module` feature doesn't fight `cargo build --workspace`
+# at the workspace root.
+[workspace]
+
+[package]
+name = "pulse-wire-py"
+version = "1.0.0-beta"
+edition = "2021"
+authors = ["Sovereignty Foundation Inc."]
+license-file = "../../LICENSE"
+rust-version = "1.95"
+description = "Python bindings (via PyO3 / maturin) for the Pulse Mesh Standard pulse-wire-udp transport and the shared-memory ring channel."
+publish = false
+
+[lib]
+name = "pulse_wire"
+crate-type = ["cdylib"]
+
+[dependencies]
+# abi3 dropped: `pyo3::buffer::PyBuffer` (used by `Receiver.recv_into`)
+# is gated behind non-Limited-API or abi3-py311+. Re-enable abi3-py311
+# once we drop Python 3.10 support.
+pyo3 = { version = "0.29", features = ["extension-module"] }
+# Renamed to avoid clashing with the lib's own `pulse_wire` module
+# name (the one PyO3's `#[pymodule]` macro expands to). The dependency is `pulse-canon`,
+# imported under the name `pulse_wire_core`.
+pulse-wire-core = { package = "pulse-canon", path = "../../pulse/pulse-canon" }
+pulse-wire-udp-transport = { package = "pulse-wire-udp", path = "../../core/pulse-wire-udp" }
+# `Channel`: the shared-memory ring and envelope store.
+core-ring = { path = "../../core/core-ring" }
+core-store = { path = "../../core/core-store" }
+
+[build-dependencies]
+# build.rs: the extension module's link arguments, from the PyO3 release
+# the module is built with.
+pyo3-build-config = "0.29"

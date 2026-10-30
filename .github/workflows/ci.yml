@@ -1,0 +1,145 @@
+name: CI
+
+# Both jobs run scripts/gate.sh, the one gate, rather than restate its
+# checks: the script's header lists them and what each needs. A pull
+# request gets the gate a change passes before it merges; a push to main,
+# or a run started by hand, gets the full gate but for its four Docker
+# legs, which --skip leaves out. Three of them bring Linux to a Mac in
+# containers, and this runner is Linux already, its test and
+# clippy-all-features checks running there; the fourth, linux-net, is the
+# AF_XDP transport's, which lives in pulse-mesh-profiles, so the gate here
+# leaves it out anyway.
+#
+# The multicast check passes only on frames delivered to both members of a
+# group. A Linux runner's loopback interface carries no IPv6 multicast
+# until it has the multicast flag and an ff00::/8 route, which the step
+# before each gate gives it.
+#
+# The repository runs only GitHub's own actions, each pinned to a full
+# commit (its release tag in a comment beside it): the toolchain comes from
+# rustup, which the runner has, and the cache from actions/cache.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  gate:
+    name: gate (ubuntu-latest)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      # A clone, not an export: the license check reads git ls-files.
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install the toolchain rust-toolchain.toml pins
+        run: |
+          CHANNEL=$(sed -n 's/^channel *= *"\(.*\)"/\1/p' rust-toolchain.toml)
+          rustup toolchain install "$CHANNEL" --profile minimal -c rustfmt -c clippy
+          rustup show active-toolchain
+
+      - name: Cache Rust artifacts and the gate's tools
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.cargo/bin
+            ~/.cargo/.crates.toml
+            ~/.cargo/.crates2.json
+            ~/.cargo/registry/index
+            ~/.cargo/registry/cache
+            ~/.cargo/git/db
+            target
+          key: gate-${{ runner.os }}-${{ hashFiles('rust-toolchain.toml', '**/Cargo.lock') }}
+          restore-keys: gate-${{ runner.os }}-
+
+      - name: Install the tools the gate names (deny, docs)
+        run: |
+          cargo install cargo-deny --locked
+          cargo install mdbook --version 0.5.4 --locked
+
+      - name: Let the loopback interface carry multicast
+        run: |
+          sudo ip link set lo multicast on
+          sudo ip -6 route add multicast ff00::/8 dev lo table local || true
+
+      - name: The gate
+        run: scripts/gate.sh
+
+  gate-full:
+    name: gate --full (ubuntu-latest)
+    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request'
+
+    steps:
+      # A clone, not an export: the license check reads git ls-files.
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # The wasm binding builds for wasm32; x86-clippy lints for x86_64
+      # Linux, which is this runner's own target unless it is an arm64 one.
+      - name: Install the toolchain rust-toolchain.toml pins, with the targets the gate builds for
+        run: |
+          CHANNEL=$(sed -n 's/^channel *= *"\(.*\)"/\1/p' rust-toolchain.toml)
+          rustup toolchain install "$CHANNEL" --profile minimal -c rustfmt -c clippy -t wasm32-unknown-unknown -t x86_64-unknown-linux-gnu
+          rustup show active-toolchain
+
+      - name: Install nightly, for the fuzz build
+        run: rustup toolchain install nightly --profile minimal
+
+      - name: Cache Rust artifacts and the gate's tools
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.cargo/bin
+            ~/.cargo/.crates.toml
+            ~/.cargo/.crates2.json
+            ~/.cargo/registry/index
+            ~/.cargo/registry/cache
+            ~/.cargo/git/db
+            target
+          key: gate-full-${{ runner.os }}-${{ hashFiles('rust-toolchain.toml', '**/Cargo.lock') }}
+          restore-keys: gate-full-${{ runner.os }}-
+
+      - name: Install Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "22"
+
+      # A Python that pip may install into; the system one is externally
+      # managed.
+      - name: Install Python
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.12"
+
+      - name: Install the tools the gate names
+        run: |
+          cargo install cargo-deny --locked
+          cargo install cargo-fuzz --locked
+          cargo install mdbook --version 0.5.4 --locked
+          PIN=$(sed -n 's/^wasm-bindgen = "=\(.*\)"/\1/p' bindings/wasm/Cargo.toml)
+          cargo install wasm-bindgen-cli --version "$PIN" --locked
+
+      - name: Install the packages the binding checks load
+        run: |
+          python3 -m pip install pytest blake3 numpy
+          (cd bindings/node && npm ci)
+
+      - name: Let the loopback interface carry multicast
+        run: |
+          sudo ip link set lo multicast on
+          sudo ip -6 route add multicast ff00::/8 dev lo table local || true
+
+      - name: The full gate, but for its Docker legs
+        run: scripts/gate.sh --full --skip linux-test-1g,linux-test-64m,linux-net,linux-clippy

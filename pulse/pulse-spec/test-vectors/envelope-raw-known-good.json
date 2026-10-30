@@ -1,0 +1,21 @@
+{
+  "description": "The canonical Raw envelope fixture. envelope_type=0x0001, no type_name, payload = [0x42, 0x42, 0x42, 0x42]. Total canonical size 54 bytes.",
+  "expected": {
+    "canonical_hex": "fd68202c51ef2ee410929061581c43480000000000000000000000000000000000000000000000000100000000000400000042424242",
+    "envelope_id_framing": "pulse-envelope-id/v2",
+    "id_hex": "fd68202c51ef2ee410929061581c4348",
+    "size_bytes": 54
+  },
+  "inputs": {
+    "envelope_type": "0x0001",
+    "flags": 0,
+    "monotonic_nanos": 0,
+    "origin_hex": "00000000000000000000000000000000",
+    "payload_hex": "42424242",
+    "payload_variant": "Raw",
+    "type_name": null
+  },
+  "name": "envelope-raw-known-good",
+  "spec_section": "3",
+  "spec_version": "draft-00"
+}

@@ -1,0 +1,20 @@
+# SPDX-License-Identifier: LicenseRef-Proprietary
+[package]
+name = "gen-lex-root"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license-file.workspace = true
+rust-version.workspace = true
+publish = false
+description = "Regenerate the published lex_root (pulse/pulse-spec/lex-root.txt) for the current public mesh-lex registry state, into the path given."
+
+[[bin]]
+name = "gen-lex-root"
+path = "src/main.rs"
+
+[dependencies]
+mesh-lex = { path = "../../pulse/mesh-lex" }
+
+[lints]
+workspace = true

@@ -1,0 +1,40 @@
+{
+  "description": "A 3-level deep Nested envelope. The outermost envelope's payload is Nested(2 children): the first child is itself Nested(1 leaf), the second is a Raw sibling. Exercises recursive composition and id propagation.",
+  "expected": {
+    "canonical_hex": "48656f6c4bd4abb75e5333b552b5842200000000000000000000000000000000000000000000000040000000000102000000497ff060348d5a87ac2946d6b149127b00000000000000000000000000000000000000000000000020000000000101000000b50706c12c3a8b9b63423a1d4142570200000000000000000000000000000000000000000000000010000000000003000000aabbcc516b213e6dd9cf61601220be0f4d8ead000000000000000000000000000000000000000000000000300000000000020000001122",
+    "envelope_id_framing": "pulse-envelope-id/v2",
+    "id_hex": "48656f6c4bd4abb75e5333b552b58422",
+    "size_bytes": 205
+  },
+  "name": "envelope-nested-3-level",
+  "spec_section": "3",
+  "spec_version": "draft-00",
+  "structure": {
+    "outer": {
+      "children": [
+        {
+          "children": [
+            {
+              "envelope_type": "0x0010",
+              "id_hex": "b50706c12c3a8b9b63423a1d41425702",
+              "payload_hex": "aabbcc",
+              "payload_variant": "Raw"
+            }
+          ],
+          "envelope_type": "0x0020",
+          "id_hex": "497ff060348d5a87ac2946d6b149127b",
+          "payload_variant": "Nested"
+        },
+        {
+          "envelope_type": "0x0030",
+          "id_hex": "516b213e6dd9cf61601220be0f4d8ead",
+          "payload_hex": "1122",
+          "payload_variant": "Raw"
+        }
+      ],
+      "envelope_type": "0x0040",
+      "id_hex": "48656f6c4bd4abb75e5333b552b58422",
+      "payload_variant": "Nested"
+    }
+  }
+}

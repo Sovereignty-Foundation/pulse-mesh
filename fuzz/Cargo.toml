@@ -1,0 +1,157 @@
+# Standalone fuzz workspace — opts out of the main pulse-mesh workspace
+# so libfuzzer-sys's nightly-only build instructions don't fight
+# `cargo build --workspace` at the repo root. Mirrors the same pattern
+# the enterprise-bindings sub-workspaces use for napi-rs / pyo3 /
+# cbindgen.
+[workspace]
+
+[package]
+name = "pulse-mesh-fuzz"
+version = "1.0.0-beta"
+edition = "2021"
+publish = false
+license-file = "../LICENSE"
+description = "cargo-fuzz harness for the standard's parsers of untrusted bytes: the UDP wire, its FEC, its ACK and NACK feedback, the receiver's handling of each datagram and its stream tracking; the canonical envelope codec; the ring header and the store's slots and region; the Lexicon"
+
+[package.metadata]
+cargo-fuzz = true
+
+[lib]
+name = "pulse_mesh_fuzz"
+path = "src/lib.rs"
+
+[dependencies]
+libfuzzer-sys = "0.4"
+
+# Path deps on the parsers under test. Same sibling-clone discipline
+# as the rest of the workspace.
+pulse-wire-udp     = { path = "../core/pulse-wire-udp" }
+pulse-canon        = { path = "../pulse/pulse-canon" }
+core-ring          = { path = "../core/core-ring" }
+core-store         = { path = "../core/core-store" }
+mesh-lex           = { path = "../pulse/mesh-lex" }
+serde              = "1.0"
+serde_json         = "1.0"
+# Independent oracles: the envelope id and the Lexicon's hashes are
+# recomputed from the specification with BLAKE3 directly.
+blake3             = "1.5"
+libc               = "0.2"
+
+# Fuzz targets must be declared individually so cargo-fuzz can pick
+# them up. Each is a `bin` whose path points at a `fuzz_targets/`
+# file.
+
+[[bin]]
+name = "fuzz_wire_decode"
+path = "fuzz_targets/fuzz_wire_decode.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "fuzz_wire_decode_with_envelope"
+path = "fuzz_targets/fuzz_wire_decode_with_envelope.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "fuzz_fec_decode"
+path = "fuzz_targets/fuzz_fec_decode.rs"
+test = false
+doc = false
+bench = false
+
+[profile.release]
+debug = 1
+
+[[bin]]
+name = "fuzz_envelope_decode"
+path = "fuzz_targets/fuzz_envelope_decode.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "fuzz_fec_decoder"
+path = "fuzz_targets/fuzz_fec_decoder.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "fuzz_store_slot"
+path = "fuzz_targets/fuzz_store_slot.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "fuzz_store_region"
+path = "fuzz_targets/fuzz_store_region.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "fuzz_ring_header"
+path = "fuzz_targets/fuzz_ring_header.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "fuzz_feedback"
+path = "fuzz_targets/fuzz_feedback.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "fuzz_stream_tracking"
+path = "fuzz_targets/fuzz_stream_tracking.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "fuzz_lex"
+path = "fuzz_targets/fuzz_lex.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "fuzz_receiver_dispatch"
+path = "fuzz_targets/fuzz_receiver_dispatch.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "fuzz_feedback_loop"
+path = "fuzz_targets/fuzz_feedback_loop.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "fuzz_reassembly"
+path = "fuzz_targets/fuzz_reassembly.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "fuzz_delivery_order"
+path = "fuzz_targets/fuzz_delivery_order.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "fuzz_sealed_open"
+path = "fuzz_targets/fuzz_sealed_open.rs"
+test = false
+doc = false
+bench = false
